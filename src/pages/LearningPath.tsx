@@ -32,9 +32,24 @@ function LearningModule({ pathId, module, index, active, onOpen, onClose, onRead
     <>
       <div ref={moduleRef} className={`module-row ${active ? 'is-active' : ''} ${data.paths.find(p => p.id === pathId)?.read.includes(module.id) ? 'is-read' : ''}`}>
         <button className="module-toggle" onClick={onOpen} aria-expanded={active}>
-          <span className="module-number">0{index + 1}</span>
+          <span className="module-number">{index < 9 ? `0${index + 1}` : index + 1}</span>
           <div className="module-info">
-            <strong>{module.title}</strong>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <strong>{module.title}</strong>
+              <span style={{
+                fontSize: '10px',
+                fontWeight: 600,
+                padding: '1px 8px',
+                borderRadius: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                background: module.focus ? '#fef3c7' : '#dcfce7',
+                color: module.focus ? '#92400e' : '#166534',
+                border: `1px solid ${module.focus ? '#fde68a' : '#bbf7d0'}`
+              }}>
+                {module.focus ? 'Targeted Focus' : 'Refresher'}
+              </span>
+            </div>
             <span>{module.description} · <Clock3 size={12} />{module.minutes} min</span>
           </div>
           <span className="module-chevron">{active ? <X size={17} /> : <ArrowRight size={17} />}</span>
@@ -107,7 +122,7 @@ export function LearningPath() {
       </div>
       <div className="path-footer">
         <Link to={`/practice/${path.id}`} className="button primary"><Sparkles size={16} />{somePractice ? 'Continue practice' : 'Start practice'}<ArrowRight size={16} /></Link>
-        <Link to={`/diagnostic/${path.topicId}`} className="button secondary"><Target size={16} />Retake check-in<ArrowRight size={16} /></Link>
+        <Link to={`/diagnostic/custom?topic=${encodeURIComponent(path.topicName)}&count=${path.questions.length}`} className="button secondary"><Target size={16} />Retake check-in<ArrowRight size={16} /></Link>
       </div>
     </>
   )

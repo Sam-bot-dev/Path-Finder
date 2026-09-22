@@ -31,12 +31,12 @@ export function Results() {
           <div className="score-card">
             <div className="score-left">
               <ProgressRing value={percent} size={80} stroke={5}>
-                <span className="score-number">{correct}<span>/5</span></span>
+                <span className="score-number">{correct}<span>/{path.questions.length}</span></span>
               </ProgressRing>
             </div>
             <div className="score-right">
-              <h2>You got <strong>{correct} right</strong> out of 5</h2>
-              <p>{correct === 5 ? 'A confident start. Your path keeps what you know fresh and gives you a few great new angles.' : correct >= 3 ? 'A strong foundation and clear places to grow. Your path balances confidence with curiosity.' : 'Every expert was once a beginner. Your path starts gently and builds carefully.'}</p>
+              <h2>You got <strong>{correct} right</strong> out of {path.questions.length}</h2>
+              <p>{percent === 100 ? 'A confident start! Your personalized path keeps what you know fresh and introduces advanced practical applications.' : percent >= 60 ? 'A strong foundation with clear focus areas. Your path balances confidence with targeted deep dives.' : 'Every expert was once a beginner. Your personalized path starts gently and builds foundations carefully.'}</p>
             </div>
           </div>
         </div>

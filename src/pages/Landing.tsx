@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ArrowDown, ArrowRight, BookOpen, Bookmark, BookmarkCheck, Brain, Check, ChevronDown, Code2, Compass, Infinity, Leaf, LoaderCircle, Search, Sparkles, Sprout, Target, Zap } from 'lucide-react'
 import { useStore } from '../lib/store'
 import { topics } from '../data/topics'
@@ -13,15 +13,83 @@ const features = [{ title: 'A kind place to start', description: 'No pressure, n
 export function Landing() {
   const { data, toggleTopic } = useStore()
   const [sampleTopic, setSampleTopic] = useState<Topic | null>(null)
+  const [promptTopic, setPromptTopic] = useState('')
+  const [promptCount, setPromptCount] = useState(5)
+  const navigate = useNavigate()
+
+  const handleHeroSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!promptTopic.trim()) return
+    navigate(`/diagnostic/custom?topic=${encodeURIComponent(promptTopic.trim())}&count=${promptCount}`)
+  }
+
   return <div className="landing">
     <div className="landing-bar"><div className="landing-bar-inner"><Brand /></div></div>
     <section className="landing-hero">
       <div className="hero-main">
-        <span className="eyebrow">YOUR PERSONAL LEARNING GUIDE</span>
+        <span className="eyebrow">YOUR PERSONALIZED LEARNING ENGINE</span>
         <h1>Start with a question.<br />End with understanding.</h1>
-        <p>A personalized learning space that meets you where you are and grows with you—one small step at a time.</p>
-        <div className="hero-actions"><Link to="/topics" className="button primary"><Sparkles size={16} />Explore something new<ArrowRight size={16} /></Link><Link to="/diagnostic" className="button secondary"><Target size={16} />Take a quick check-in<ArrowRight size={16} /></Link></div>
-        <div className="hero-trust"><Check size={13} /><span>5 quick questions per topic</span><Check size={13} /><span>Personalized in seconds</span><Check size={13} /><span>Practice that actually teaches</span></div>
+        <p>Answer 5–10 diagnostic questions on any subject. Gemini analyzes your knowledge gaps to generate an adaptive curriculum with resources, exercises, and progress tracking.</p>
+        
+        {/* Dynamic Topic Input on Hero */}
+        <form onSubmit={handleHeroSubmit} style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid var(--color-line, #e5e1d9)',
+          borderRadius: '14px',
+          padding: '12px 14px',
+          marginTop: '16px',
+          marginBottom: '20px',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <input
+              type="text"
+              value={promptTopic}
+              onChange={e => setPromptTopic(e.target.value)}
+              placeholder="What do you want to learn? (e.g., Quantum Computing, Cell Biology...)"
+              style={{
+                flex: '1 1 240px',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: '1px solid var(--color-clay, #d6cfc1)',
+                fontSize: '14px',
+                outline: 'none',
+                background: '#fff'
+              }}
+            />
+            <button type="submit" className="button primary" style={{ whiteSpace: 'nowrap' }} disabled={!promptTopic.trim()}>
+              <Sparkles size={16} />Start Check-in ({promptCount} Qs)<ArrowRight size={16} />
+            </button>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', fontSize: '12px', color: 'var(--color-stone, #99968c)' }}>
+            <span>Assessment length:</span>
+            {[5, 7, 10].map(cnt => (
+              <button
+                key={cnt}
+                type="button"
+                onClick={() => setPromptCount(cnt)}
+                style={{
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  border: '1px solid',
+                  borderColor: promptCount === cnt ? 'var(--color-green, #2c6e52)' : 'var(--color-line, #e5e1d9)',
+                  background: promptCount === cnt ? 'var(--color-green, #2c6e52)' : 'transparent',
+                  color: promptCount === cnt ? '#fff' : 'var(--color-soot, #433f37)',
+                  cursor: 'pointer',
+                  fontSize: '11px'
+                }}
+              >
+                {cnt} Qs
+              </button>
+            ))}
+          </div>
+        </form>
+
+        <div className="hero-trust">
+          <Check size={13} /><span>5–10 adaptive questions</span>
+          <Check size={13} /><span>Personalized in seconds</span>
+          <Check size={13} /><span>Practice that actually teaches</span>
+        </div>
       </div>
       <div className="hero-visual"><div className="hero-visual-inner"><img src="/images/learning-journey.png" alt="" loading="eager" width="600" height="400" /></div></div>
     </section>
