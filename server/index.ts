@@ -28,10 +28,10 @@ app.get('/api/status', (_req, res) => {
   const aiStatus = getAIStatus()
   res.json({
     status: 'ok',
-    ai: aiStatus.chatgpt || aiStatus.gemini,
-    provider: aiStatus.chatgpt ? 'chatgpt' : (aiStatus.gemini ? 'gemini' : 'curated'),
-    model: aiStatus.chatgpt ? 'gpt-4o-mini' : (process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite'),
-    providers: aiStatus,
+    ai: aiStatus.api,
+    provider: 'api',
+    model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+    providers: { api: aiStatus.api },
     youtube: Boolean(process.env.YOUTUBE_API_KEY),
     timestamp: new Date().toISOString()
   })

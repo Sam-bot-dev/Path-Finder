@@ -5,16 +5,16 @@ dotenv.config()
 
 const EXPERIENTIAL_API_KEY = process.env.EXPERIENTIAL_API_KEY || process.env.OPENAI_API_KEY || ''
 const EXPERIENTIAL_BASE_URL = process.env.EXPERIENTIAL_BASE_URL || 'https://api.experientiallabs.ai/v1'
-const CHATGPT_MODELS = ['gpt-4o-mini', 'gpt-4o', 'gpt-5.6-luna']
+const API_MODELS = ['gpt-4o-mini', 'deepseek-v4-flash', 'gpt-5.6-luna']
 
-export async function generateWithChatGPT(prompt: string, systemInstruction?: string): Promise<string> {
+export async function generateWithExternalAPI(prompt: string, systemInstruction?: string): Promise<string> {
   if (!EXPERIENTIAL_API_KEY) {
-    throw new Error('ChatGPT / Experiential API key not configured.')
+    throw new Error('API key not configured.')
   }
 
   let lastError: any = null
 
-  for (const model of CHATGPT_MODELS) {
+  for (const model of API_MODELS) {
     try {
       const response = await fetch(`${EXPERIENTIAL_BASE_URL}/chat/completions`, {
         method: 'POST',
@@ -30,62 +30,59 @@ export async function generateWithChatGPT(prompt: string, systemInstruction?: st
             { role: 'user', content: prompt }
           ]
         }),
-        signal: AbortSignal.timeout(30000)
+        signal: AbortSignal.timeout(15000)
       })
 
-      if (!response.ok) {
-        const errorBody = await response.text()
-        console.warn(`ChatGPT (${model}) error ${response.status}:`, errorBody)
-        lastError = new Error(`ChatGPT (${model}) error: ${errorBody}`)
-        continue
-      }
-
-      const data = await response.json()
-      const content = data.choices?.[0]?.message?.content
-      if (content) {
-        return content
+      if (response.ok) {
+        const data = await response.json()
+        const content = data.choices?.[0]?.message?.content
+        if (content) {
+          return content
+        }
       }
     } catch (err: any) {
-      console.warn(`ChatGPT (${model}) failed:`, err.message)
       lastError = err
     }
   }
 
-  throw lastError || new Error('All ChatGPT attempts failed.')
+  throw lastError || new Error('External API call failed.')
 }
 
 /**
- * Intelligent cascading AI generator:
- * 1. Tries ChatGPT (Experiential Labs) for heavy work.
- * 2. Cascades automatically to Google Gemini.
+ * Unified AI API Gateway:
+ * Provides seamless generative intelligence with zero error overhead.
  */
-export async function generateContentAI(prompt: string, systemInstruction?: string): Promise<{ text: string; provider: 'chatgpt' | 'gemini' }> {
-  // First try ChatGPT if configured
-  if (EXPERIENTIAL_API_KEY) {
+export async function generateContentAI(
+  prompt: string,
+  systemInstruction?: string
+): Promise<{ text: string; provider: 'api' }> {
+  // 1. Primary AI Engine: Google Generative AI (Gemini 3.5 Flash)
+  if (isGeminiConfigured()) {
     try {
-      console.log('[AI Gateway] Attempting generation with ChatGPT / Experiential Labs...')
-      const text = await generateWithChatGPT(prompt, systemInstruction)
-      console.log('[AI Gateway] Successfully generated with ChatGPT.')
-      return { text, provider: 'chatgpt' }
-    } catch (chatGptError: any) {
-      console.warn('[AI Gateway] ChatGPT unavailable, cascading to Gemini AI:', chatGptError.message)
+      console.log('[AI Gateway] Generating with API...')
+      const text = await generateWithGemini(prompt, systemInstruction)
+      console.log('[AI Gateway] Successfully generated with API.')
+      return { text, provider: 'api' }
+    } catch (err: any) {
+      console.warn('[AI Gateway] Primary API error:', err.message)
     }
   }
 
-  // Next try Google Gemini
-  if (isGeminiConfigured()) {
-    console.log('[AI Gateway] Generating with Google Gemini Model...')
-    const text = await generateWithGemini(prompt, systemInstruction)
-    console.log('[AI Gateway] Successfully generated with Google Gemini.')
-    return { text, provider: 'gemini' }
+  // 2. Secondary AI Engine: External API
+  if (EXPERIENTIAL_API_KEY) {
+    try {
+      const text = await generateWithExternalAPI(prompt, systemInstruction)
+      return { text, provider: 'api' }
+    } catch {
+      // Fall through to error
+    }
   }
 
-  throw new Error('No AI providers available.')
+  throw new Error('AI API currently unavailable.')
 }
 
-export function getAIStatus(): { chatgpt: boolean; gemini: boolean } {
+export function getAIStatus(): { api: boolean } {
   return {
-    chatgpt: Boolean(EXPERIENTIAL_API_KEY),
-    gemini: isGeminiConfigured()
+    api: isGeminiConfigured() || Boolean(EXPERIENTIAL_API_KEY)
   }
 }
