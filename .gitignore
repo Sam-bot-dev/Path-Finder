@@ -23,7 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment
+# Environment & Secrets
 .env
 .env.*
 !.env.example
+*.service-account.json
+path-finder.json
+
