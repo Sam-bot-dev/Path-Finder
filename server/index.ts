@@ -1,7 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import { generateWithGemini, isGeminiConfigured } from './services/gemini.js'
+import { generateContentAI, getAIStatus } from './services/llm.js'
+import { isGeminiConfigured } from './services/gemini.js'
 import {
   generatePedagogicalDiagnostic,
   generatePedagogicalPath,
@@ -24,11 +25,13 @@ app.use(express.json({ limit: '2mb' }))
 // Health / Status endpoint
 app.get('/api/status', (_req, res) => {
   res.setHeader('Cache-Control', 'no-store')
+  const aiStatus = getAIStatus()
   res.json({
     status: 'ok',
-    ai: isGeminiConfigured(),
-    provider: 'gemini',
-    model: process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+    ai: aiStatus.chatgpt || aiStatus.gemini,
+    provider: aiStatus.chatgpt ? 'chatgpt' : (aiStatus.gemini ? 'gemini' : 'curated'),
+    model: aiStatus.chatgpt ? 'gpt-4o-mini' : (process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite'),
+    providers: aiStatus,
     youtube: Boolean(process.env.YOUTUBE_API_KEY),
     timestamp: new Date().toISOString()
   })
@@ -47,9 +50,8 @@ app.post('/api/diagnostic', async (req, res) => {
 
     console.log(`[Diagnostic] Generating ${count} questions for topic: "${cleanTopic}" (Level: ${level})`)
 
-    if (isGeminiConfigured()) {
-      try {
-        const prompt = `You are a master educator crafting a diagnostic assessment for a student exploring the topic: "${cleanTopic}".
+    try {
+      const prompt = `You are a master educator crafting a diagnostic assessment for a student exploring the topic: "${cleanTopic}".
 Difficulty Level: ${level}.
 Generate exactly ${count} diagnostic multiple-choice questions testing distinct essential subskills in progressive pedagogical order.
 
@@ -79,31 +81,31 @@ Constraints:
 - Realistic distractors reflecting common student misconceptions.
 - Output valid JSON only, no markdown backticks, no preamble.`
 
-        const rawJson = await generateWithGemini(prompt, 'You are an educational curriculum assessment specialist. Always return valid JSON matching the requested schema.')
-        const parsed = JSON.parse(rawJson)
+      const { text: rawJson, provider } = await generateContentAI(prompt, 'You are an educational curriculum assessment specialist. Always return valid JSON matching the requested schema.')
+      const parsed = JSON.parse(rawJson)
 
-        if (Array.isArray(parsed.questions) && parsed.questions.length >= 5) {
-          const validatedQuestions: DiagnosticQuestion[] = parsed.questions.slice(0, count).map((q: any, i: number) => ({
-            id: String(q.id || `q-${i + 1}-${Date.now()}`),
-            skill: String(q.skill || `Skill ${i + 1}`),
-            prompt: String(q.prompt || `Question ${i + 1}`),
-            options: Array.isArray(q.options) && q.options.length === 4 ? q.options.map(String) : [
-              'Correct answer', 'Plausible alternative', 'Common misconception', 'Edge case'
-            ],
-            answer: typeof q.answer === 'number' && q.answer >= 0 && q.answer < 4 ? q.answer : 0,
-            explanation: String(q.explanation || 'Understanding this skill is foundational to mastering this topic.')
-          }))
+      if (Array.isArray(parsed.questions) && parsed.questions.length >= 5) {
+        const validatedQuestions: DiagnosticQuestion[] = parsed.questions.slice(0, count).map((q: any, i: number) => ({
+          id: String(q.id || `q-${i + 1}-${Date.now()}`),
+          skill: String(q.skill || `Skill ${i + 1}`),
+          prompt: String(q.prompt || `Question ${i + 1}`),
+          options: Array.isArray(q.options) && q.options.length === 4 ? q.options.map(String) : [
+            'Correct answer', 'Plausible alternative', 'Common misconception', 'Edge case'
+          ],
+          answer: typeof q.answer === 'number' && q.answer >= 0 && q.answer < 4 ? q.answer : 0,
+          explanation: String(q.explanation || 'Understanding this skill is foundational to mastering this topic.')
+        }))
 
-          console.log(`[Diagnostic] Successfully generated ${validatedQuestions.length} questions via Gemini.`)
-          return res.json({
-            topic: cleanTopic,
-            questions: validatedQuestions,
-            source: 'ai'
-          })
-        }
-      } catch (geminiError: any) {
-        console.warn('[Diagnostic] Gemini generation error, using pedagogical generator:', geminiError.message)
+        console.log(`[Diagnostic] Successfully generated ${validatedQuestions.length} questions via ${provider}.`)
+        return res.json({
+          topic: cleanTopic,
+          questions: validatedQuestions,
+          source: 'ai',
+          provider
+        })
       }
+    } catch (aiError: any) {
+      console.warn('[Diagnostic] AI generation error, using pedagogical generator:', aiError.message)
     }
 
     // High quality resilient fallback
@@ -135,17 +137,16 @@ app.post('/api/path', async (req, res) => {
 
     console.log(`[Path] Generating personalized path for "${cleanTopic}" (${correctCount}/${total} correct, ${score}%)`)
 
-    if (isGeminiConfigured()) {
-      try {
-        const studentPerformance = questions.map((q: any, i: number) => ({
-          skill: q.skill,
-          question: q.prompt,
-          isCorrect: q.answer === answers[i],
-          studentChoice: q.options[answers[i]],
-          correctChoice: q.options[q.answer]
-        }))
+    try {
+      const studentPerformance = questions.map((q: any, i: number) => ({
+        skill: q.skill,
+        question: q.prompt,
+        isCorrect: q.answer === answers[i],
+        studentChoice: q.options[answers[i]],
+        correctChoice: q.options[q.answer]
+      }))
 
-        const prompt = `You are a personalized learning path architect. Design an adaptive curriculum for a student learning "${cleanTopic}".
+      const prompt = `You are a personalized learning path architect. Design an adaptive curriculum for a student learning "${cleanTopic}".
 The student answered ${correctCount} of ${total} diagnostic check-in questions correctly (${score}%).
 
 Student Diagnostic Results by Skill:
@@ -198,8 +199,8 @@ Output ONLY a JSON object with this structure:
   ]
 }`
 
-        const rawJson = await generateWithGemini(prompt, 'You are an adaptive curriculum architect. Output valid JSON matching the requested schema.')
-        const parsed = JSON.parse(rawJson)
+      const { text: rawJson, provider } = await generateContentAI(prompt, 'You are an adaptive curriculum architect. Output valid JSON matching the requested schema.')
+      const parsed = JSON.parse(rawJson)
 
         if (Array.isArray(parsed.modules) && parsed.modules.length >= total) {
           const modules: LearningLesson[] = parsed.modules.slice(0, total).map((m: any, i: number) => {
@@ -251,7 +252,7 @@ Output ONLY a JSON object with this structure:
             }
           })
 
-          console.log(`[Path] Successfully created ${modules.length} modules via Gemini.`)
+          console.log(`[Path] Successfully created ${modules.length} modules via ${provider}.`)
           return res.json({
             id: crypto.randomUUID(),
             topicId: cleanTopic.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
@@ -264,13 +265,13 @@ Output ONLY a JSON object with this structure:
             completed: [],
             read: [],
             practiceScores: {},
-            source: 'ai'
+            source: 'ai',
+            provider
           })
         }
-      } catch (geminiError: any) {
-        console.warn('[Path] Gemini generation failed, using pedagogical generator:', geminiError.message)
+      } catch (aiError: any) {
+        console.warn('[Path] AI generation failed, using pedagogical generator:', aiError.message)
       }
-    }
 
     // High quality pedagogical fallback
     const fallbackModules = generatePedagogicalPath(
