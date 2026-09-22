@@ -16,9 +16,13 @@ An adaptive, AI-orchestrated learning engine that diagnoses student knowledge ga
 [![OpenAI](https://img.shields.io/badge/ChatGPT-GPT--4o_Mini-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com/)
 [![Firebase](https://img.shields.io/badge/Firebase_Auth-Google_SSO-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-[Key Features](#-core-features) • [System Architecture](#️-system-architecture) • [User Flow](#-user-journey--pedagogical-flow) • [Quick Start](#-getting-started) • [API Docs](#-api-reference)
+[Visual Showcase](#-visual-showcase) • [Key Features](#-core-features) • [System Architecture](#️-system-architecture) • [User Flow](#-user-journey--pedagogical-flow) • [Quick Start](#-getting-started) • [API Docs](#-api-reference)
 
 ---
+
+<p align="center">
+  <img src="assets/Dashboard.png" alt="Path-Finder Learning Engine Hero Dashboard" width="100%" />
+</p>
 
 </div>
 
@@ -41,6 +45,12 @@ Traditional learning platforms treat students like identical factory parts: ever
 ## 🏗️ System Architecture
 
 Path-Finder is architected with a resilient client-server topology featuring an **AI Gateway with Multi-Provider Cascading Fallback** to guarantee 100% zero-downtime pedagogy.
+
+<p align="center">
+  <img src="assets/diagram.png" alt="Path-Finder System Architecture and Component Interaction Blueprint" width="100%" />
+</p>
+
+### Component & Data Flow Topology
 
 ```mermaid
 flowchart TD
@@ -134,6 +144,60 @@ sequenceDiagram
     Learner->>UI: Completes module practice questions
     UI->>Store: Records practice score, study time, streak & awards badges
 ```
+
+### 📊 Calibrated Assessment & Adaptive Path Synthesis
+
+After answering the calibrated questions, Path-Finder isolates misconceptions and dynamically generates a personalized syllabus with **Targeted Focus** modules for gaps and accelerated **Refresher** modules for mastered concepts:
+
+<p align="center">
+  <img src="assets/Screenshot 2026-09-22 at 1.22.24 PM.png" alt="Diagnostic Assessment Results and Synthesized Learning Path" width="85%" />
+</p>
+
+---
+
+## 📸 Visual Showcase
+
+Explore the core user interface and interactive capabilities of Path-Finder:
+
+| View | Purpose |
+| :--- | :--- |
+| **[Landing & Topic Check-In](#1-adaptive-landing--diagnostic-check-in)** | Enter any subject, customize question count (5, 7, 10 Qs), and initiate diagnostics. |
+| **[Diagnostic Results & Curriculum](#2-formative-results--tailored-curriculum)** | Instant competency score, skill breakdown, and tailored module syllabus. |
+| **[Analytics & Mastery Matrix](#3-personalized-analytics--skill-competency-matrix)** | Active paths, daily study goals, streak counters, and skill mastery matrix. |
+| **[Google Firebase SSO](#4-seamless-google-firebase-sso--cloud-sync)** | One-click Google sign-in with reactive avatar and multi-device persistence. |
+| **[System Architecture Blueprint](#5-system-architecture-blueprint)** | Comprehensive full-stack component, service, and data-flow map. |
+
+<br/>
+
+### 1. Adaptive Landing & Diagnostic Check-In
+Enter any topic to trigger an intelligent 5–10 question diagnostic assessment calibrated to your proficiency level.
+<p align="center">
+  <img src="assets/Dashboard.png" alt="Path-Finder Landing Page & Diagnostic Prompt" width="95%" />
+</p>
+
+### 2. Formative Results & Tailored Curriculum
+Immediate educational feedback highlighting concept mastery, isolating knowledge gaps, and compiling a personalized learning path.
+<p align="center">
+  <img src="assets/Screenshot 2026-09-22 at 1.22.24 PM.png" alt="Diagnostic Results and Personalized Learning Path" width="85%" />
+</p>
+
+### 3. Personalized Analytics & Skill Competency Matrix
+Live tracking for daily study time, streaks, active curriculums, and a persistent matrix classifying skills as *Mastered* vs *Needs Practice*.
+<p align="center">
+  <img src="assets/Screenshot 2026-09-23 at 2.42.05 AM.png" alt="Personalized Learning Analytics and Skill Competency Matrix" width="95%" />
+</p>
+
+### 4. Seamless Google Firebase SSO & Cloud Sync
+Google Single Sign-On integration providing cloud synchronization for learner history, preferences, and progress.
+<p align="center">
+  <img src="assets/Screenshot 2026-09-22 at 2.40.19 PM.png" alt="Google Firebase SSO Authentication & Sync" width="75%" />
+</p>
+
+### 5. System Architecture Blueprint
+High-level system topology outlining frontend components, backend routes, AI Gateway fallback cascade, and external integrations.
+<p align="center">
+  <img src="assets/diagram.png" alt="Path-Finder System Architecture Blueprint" width="95%" />
+</p>
 
 ---
 
@@ -334,6 +398,12 @@ Returns verified YouTube educational videos, direct search queries, and curated 
 
 ```
 Path-Finder/
+├── assets/                         # Application screenshots & architecture diagrams
+│   ├── Dashboard.png               # Landing page hero & diagnostic generator
+│   ├── diagram.png                 # Full system architecture & service flow blueprint
+│   ├── Screenshot 2026-09-22 at 1.22.24 PM.png  # Diagnostic evaluation & adaptive curriculum
+│   ├── Screenshot 2026-09-22 at 2.40.19 PM.png  # Google Firebase SSO authentication
+│   └── Screenshot 2026-09-23 at 2.42.05 AM.png  # Personalized analytics & mastery matrix
 ├── server/                         # Express API & AI Gateway
 │   ├── index.ts                    # Server initialization and routes
 │   └── services/
