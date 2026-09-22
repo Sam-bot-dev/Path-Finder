@@ -26,9 +26,40 @@ export const cloud = {
     return signInWithEmailAndPassword(auth, email, password)
   },
   async logout() { if (auth) await signOut(auth) },
-  async load(uid: string): Promise<AppData | null> { if (!db) return null; const snap = await getDoc(doc(db, 'learners', uid)); return snap.exists() ? snap.data() as AppData : null },
-  async save(uid: string, data: AppData) { if (db) await setDoc(doc(db, 'learners', uid), JSON.parse(JSON.stringify(data))) },
-  async remove(uid: string) { if (db) await deleteDoc(doc(db, 'learners', uid)) },
+  async load(uid: string): Promise<AppData | null> {
+    if (!db) return null
+    try {
+      const snap = await Promise.race([
+        getDoc(doc(db, 'learners', uid)),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 1500))
+      ])
+      return snap && 'exists' in snap && snap.exists() ? (snap.data() as AppData) : null
+    } catch {
+      return null
+    }
+  },
+  async save(uid: string, data: AppData) {
+    if (!db) return
+    try {
+      await Promise.race([
+        setDoc(doc(db, 'learners', uid), JSON.parse(JSON.stringify(data))),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 1500))
+      ])
+    } catch {
+      // Offline / not configured
+    }
+  },
+  async remove(uid: string) {
+    if (!db) return
+    try {
+      await Promise.race([
+        deleteDoc(doc(db, 'learners', uid)),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), 1500))
+      ])
+    } catch {
+      // Offline
+    }
+  },
   async photo(uid: string, file: File) {
     if (!storage) throw new Error('Firebase Storage is not configured.')
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 2 * 1024 * 1024) throw new Error('Choose a JPG, PNG, or WebP smaller than 2 MB.')

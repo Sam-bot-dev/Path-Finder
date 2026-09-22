@@ -19,8 +19,11 @@ export function Settings() {
     if (user) {
       if (user.displayName && user.displayName !== name) setName(user.displayName)
       if (user.photoURL && user.photoURL !== photo) setPhoto(user.photoURL)
+    } else {
+      setName(data.profile.name || 'Alex')
+      setPhoto(data.profile.photoURL || '')
     }
-  }, [user])
+  }, [user, data.profile])
 
   const onPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

@@ -31,7 +31,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => { dataRef.current = data; try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch { notify('Browser storage is full or unavailable. Export your progress in Settings to keep a backup.') } }, [data, notify])
   useEffect(() => cloud.watch(async current => {
     setUser(current); setCloudReady(false)
-    if (!current) { setSync('local'); return }
+    if (!current) {
+      setSync('local')
+      setData(prev => {
+        if (prev.profile.photoURL || prev.profile.name !== 'Alex') {
+          return {
+            ...prev,
+            profile: {
+              ...prev.profile,
+              name: 'Alex',
+              photoURL: undefined
+            }
+          }
+        }
+        return prev
+      })
+      return
+    }
 
     // Instantly update profile in UI with Google account details
     setData(d => ({
@@ -97,7 +113,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     updateProfile(profile) { update(d => ({ ...d, profile: { ...d.profile, ...profile } })); notify('Your preferences have been saved') },
     importData(imported) { if (!validData(imported)) throw new Error('This file is not a valid LearnPath backup.'); setData({ ...imported, updatedAt: new Date().toISOString() }); notify('Your learning progress has been restored') },
     async reset() { if (user) await cloud.remove(user.uid); setData(blankData()); sessionStorage.removeItem('learnpath-quiz'); notify('Your learning data has been reset') },
-    async logout() { if (user) await cloud.save(user.uid, dataRef.current).catch(() => {}); await cloud.logout(); setData(blankData()); sessionStorage.removeItem('learnpath-quiz'); notify('You’re signed out. Your cloud progress is safe.') },
+    async logout() {
+      try {
+        await cloud.logout()
+      } catch (err) {
+        console.error('Logout error:', err)
+      }
+      setUser(null)
+      const fresh = blankData()
+      setData(fresh)
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fresh))
+      } catch {}
+      sessionStorage.removeItem('learnpath-quiz')
+      setSync('local')
+      notify('You have been signed out.')
+    },
   }
   return <Context.Provider value={value}>{children}</Context.Provider>
 }
