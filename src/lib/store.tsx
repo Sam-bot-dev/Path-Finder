@@ -41,9 +41,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           const other = newer === remote ? local : remote
           return { ...newer, profile: { ...newer.profile, name: current.displayName || newer.profile.name, photoURL: current.photoURL || newer.profile.photoURL }, paths: [...newer.paths, ...other.paths.filter(p => !newer.paths.some(n => n.id === p.id))], savedTopics: [...new Set([...newer.savedTopics, ...other.savedTopics])], activities: [...newer.activities, ...other.activities.filter(a => !newer.activities.some(n => n.id === a.id))] }
         })
-      } else setData(d => ({ ...d, profile: { ...d.profile, name: current.displayName || d.profile.name } }))
+      } else {
+        setData(d => ({ ...d, profile: { ...d.profile, name: current.displayName || d.profile.name, photoURL: current.photoURL || d.profile.photoURL } }))
+      }
       setCloudReady(true); setSync('synced')
-    } catch { setSync('error'); notify('Cloud sync is unavailable. Your progress is still saved on this device.') }
+    } catch {
+      setSync('error')
+      setData(d => ({ ...d, profile: { ...d.profile, name: current.displayName || d.profile.name, photoURL: current.photoURL || d.profile.photoURL } }))
+    }
   }), [notify])
   useEffect(() => {
     if (!user || !cloudReady || !firebaseConfigured) return
