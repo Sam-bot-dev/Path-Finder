@@ -111,6 +111,7 @@ export function AccountModal({ onClose }: { onClose: () => void }) {
                 <img
                   src={profilePhoto}
                   alt={user.displayName || data.profile.name}
+                  referrerPolicy="no-referrer"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               ) : (

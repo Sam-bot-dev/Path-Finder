@@ -32,6 +32,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => cloud.watch(async current => {
     setUser(current); setCloudReady(false)
     if (!current) { setSync('local'); return }
+
+    // Instantly update profile in UI with Google account details
+    setData(d => ({
+      ...d,
+      profile: {
+        ...d.profile,
+        name: current.displayName || d.profile.name,
+        photoURL: current.photoURL || d.profile.photoURL
+      }
+    }))
+
     setSync('syncing')
     try {
       const remote = await cloud.load(current.uid)
@@ -39,15 +50,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setData(local => {
           const newer = new Date(remote.updatedAt).getTime() > new Date(local.updatedAt).getTime() ? remote : local
           const other = newer === remote ? local : remote
-          return { ...newer, profile: { ...newer.profile, name: current.displayName || newer.profile.name, photoURL: current.photoURL || newer.profile.photoURL }, paths: [...newer.paths, ...other.paths.filter(p => !newer.paths.some(n => n.id === p.id))], savedTopics: [...new Set([...newer.savedTopics, ...other.savedTopics])], activities: [...newer.activities, ...other.activities.filter(a => !newer.activities.some(n => n.id === a.id))] }
+          return {
+            ...newer,
+            profile: {
+              ...newer.profile,
+              name: current.displayName || newer.profile.name,
+              photoURL: current.photoURL || newer.profile.photoURL
+            },
+            paths: [...newer.paths, ...other.paths.filter(p => !newer.paths.some(n => n.id === p.id))],
+            savedTopics: [...new Set([...newer.savedTopics, ...other.savedTopics])],
+            activities: [...newer.activities, ...other.activities.filter(a => !newer.activities.some(n => n.id === a.id))]
+          }
         })
-      } else {
-        setData(d => ({ ...d, profile: { ...d.profile, name: current.displayName || d.profile.name, photoURL: current.photoURL || d.profile.photoURL } }))
       }
       setCloudReady(true); setSync('synced')
     } catch {
       setSync('error')
-      setData(d => ({ ...d, profile: { ...d.profile, name: current.displayName || d.profile.name, photoURL: current.photoURL || d.profile.photoURL } }))
     }
   }), [notify])
   useEffect(() => {

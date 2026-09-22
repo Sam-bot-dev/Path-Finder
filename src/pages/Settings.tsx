@@ -161,7 +161,7 @@ export function Settings() {
             flexShrink: 0
           }}>
             {currentPhoto ? (
-              <img src={currentPhoto} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={currentPhoto} alt="" referrerPolicy="no-referrer" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               initials
             )}
