@@ -8,5 +8,7 @@ export interface SavedResource { id: string; pathId: string; lessonId: string; t
 export interface Activity { id: string; date: string; type: 'diagnostic' | 'lesson' | 'practice'; label: string; seconds: number }
 export interface Profile { name: string; goal: number; joinedAt: string; photoURL?: string }
 export interface AppData { version: 1; profile: Profile; paths: LearningPath[]; savedTopics: string[]; savedResources: SavedResource[]; activities: Activity[]; updatedAt: string }
-export interface Video { id: string; title: string; channel: string; thumbnail: string }
+export interface Video { id: string; title: string; channel: string; thumbnail: string; url?: string }
+export interface WebResource { title: string; url: string; source: string; description: string; type: 'docs' | 'tutorial' | 'interactive' | 'course' }
+export interface ExtraResourcesResult { videos: Video[]; resources: WebResource[]; youtubeSearchUrl: string; source: string }
 export interface ServiceStatus { ai: boolean; youtube: boolean }

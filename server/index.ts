@@ -333,14 +333,16 @@ Format as JSON: { "questions": [ { "id": "q1", "skill": "...", "prompt": "...", 
   return res.status(400).json({ error: 'Unknown action' })
 })
 
-// Educational video search
+// Educational video and resources search
 app.get('/api/videos', async (req, res) => {
-  const query = typeof req.query.q === 'string' ? req.query.q.trim() : ''
-  if (!query) {
-    return res.json({ videos: [] })
-  }
-  const videos = await fetchVideosForQuery(query, process.env.YOUTUBE_API_KEY)
-  return res.json({ videos, source: process.env.YOUTUBE_API_KEY ? 'youtube' : 'curated' })
+  const query = typeof req.query.q === 'string' ? req.query.q.trim() : 'educational tutorial'
+  const result = await fetchVideosForQuery(query || 'programming and science concepts', process.env.YOUTUBE_API_KEY)
+  return res.json({
+    videos: result.videos,
+    resources: result.resources,
+    youtubeSearchUrl: result.youtubeSearchUrl,
+    source: process.env.YOUTUBE_API_KEY ? 'youtube' : 'curated'
+  })
 })
 
 // Topic auto-suggestions

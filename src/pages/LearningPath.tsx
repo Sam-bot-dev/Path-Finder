@@ -1,14 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, Clock3, Compass, ExternalLink, LoaderCircle, PlayCircle, Sparkles, Target, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, BookOpen, Check, CheckCircle2, ChevronDown, ChevronUp, Clock3, Compass, ExternalLink, LoaderCircle, PlayCircle, Sparkles, Target, Video as VideoIcon, X } from 'lucide-react'
 import { useStore, progressOf } from '../lib/store'
 import { videoService } from '../lib/services'
 import { Loading, Modal, PageHeading, ProgressRing } from '../components/ui'
-import type { Lesson, Video } from '../lib/types'
+import type { Lesson, Video, ExtraResourcesResult } from '../lib/types'
+
+function formatExternalUrl(url?: string): string {
+  if (!url) return ''
+  const trimmed = url.trim()
+  if (!trimmed) return ''
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed
+  }
+  return `https://${trimmed}`
+}
 
 function LearningModule({ pathId, module, index, active, onOpen, onClose, onRead }: { pathId: string; module: Lesson; index: number; active: boolean; onOpen: () => void; onClose: () => void; onRead: (id: string) => void }) {
   const { data, readLesson, toggleResource } = useStore()
-  const [videos, setVideos] = useState<Video[]>([])
+  const [extraData, setExtraData] = useState<ExtraResourcesResult | null>(null)
   const [busy, setBusy] = useState(false)
   const [resourceOpen, setResourceOpen] = useState(false)
   const resourceRef = useRef<HTMLDivElement>(null)
@@ -64,29 +74,199 @@ function LearningModule({ pathId, module, index, active, onOpen, onClose, onRead
               </div>
             </div>
             <div className="lesson-footer">
-              <button className="icon-button save-resource" aria-label={`${savedResource ? 'Unsave' : 'Save'} resource`} aria-pressed={savedResource} onClick={() => toggleResource({ id: `${pathId}-${module.id}`, pathId, lessonId: module.id, title: module.title, topic: data.paths.find(p => p.id === pathId)?.topicName || '' })}>
-                {savedResource ? <Check size={16} /> : <BookOpen size={16} />}{savedResource ? 'Saved' : 'Save resource'}
+              <button
+                className="icon-button save-resource"
+                aria-label={`${savedResource ? 'Unsave' : 'Save'} resource`}
+                aria-pressed={savedResource}
+                onClick={() =>
+                  toggleResource({
+                    id: `${pathId}-${module.id}`,
+                    pathId,
+                    lessonId: module.id,
+                    title: module.title,
+                    topic: data.paths.find(p => p.id === pathId)?.topicName || ''
+                  })
+                }
+              >
+                {savedResource ? <Check size={16} /> : <BookOpen size={16} />}
+                {savedResource ? 'Saved' : 'Save resource'}
               </button>
-              <div className="resource-popover-wrapper">
-                <button className="text-link resource-toggle" onClick={() => { if (!videos.length && !busy) { setBusy(true); videoService.search(module.videoQuery).then(v => { setVideos(v); setBusy(false) }).catch(() => setBusy(false)) } setResourceOpen(!resourceOpen) }}>
-                  Explore more resources{resourceOpen ? <X size={13} /> : <ArrowRight size={13} />}
-                </button>
-                {resourceOpen && (
-                  <div ref={resourceRef} className="resource-popover">
-                    {busy && <div className="popover-loading"><LoaderCircle size={16} className="spin" />Looking for resources…</div>}
-                    {!busy && videos.map(video => (
-                      <a key={video.id} href={`https://youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer" className="resource-popover-item">
-                        <div className="popover-video-thumb"><img src={video.thumbnail} alt="" loading="lazy" width="120" height="68" /></div>
-                        <div className="popover-video-info"><strong>{video.title}</strong><span>{video.channel}</span></div>
-                        <PlayCircle size={14} />
+
+              <button
+                className="text-link resource-toggle"
+                onClick={() => {
+                  if (!extraData && !busy) {
+                    setBusy(true)
+                    videoService
+                      .search(module.videoQuery || `${module.title} tutorial`)
+                      .then(res => {
+                        setExtraData(res)
+                        setBusy(false)
+                      })
+                      .catch(() => setBusy(false))
+                  }
+                  setResourceOpen(!resourceOpen)
+                }}
+              >
+                {resourceOpen ? 'Hide extra resources' : 'Explore more resources'}
+                {resourceOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              </button>
+            </div>
+
+            {resourceOpen && (
+              <div className="resources-expansion-panel">
+                <div className="resources-panel-header">
+                  <span className="resources-panel-title">
+                    <Sparkles size={14} /> Recommended Learning Resources
+                  </span>
+                  <button
+                    className="icon-button small-close-btn"
+                    onClick={() => setResourceOpen(false)}
+                    aria-label="Close resources panel"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+
+                {busy && (
+                  <div className="resources-loading">
+                    <LoaderCircle size={16} className="spin" />
+                    <span>Finding educational tutorials, verified videos, and documentation…</span>
+                  </div>
+                )}
+
+                {/* Real Verified Educational YouTube Videos */}
+                {!busy && extraData && extraData.videos.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-stone)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '8px' }}>
+                      Recommended Video Tutorials
+                    </div>
+                    <div className="resources-video-grid">
+                      {extraData.videos.map(video => {
+                        const videoUrl = formatExternalUrl(video.url || (video.id ? `https://youtube.com/watch?v=${video.id}` : ''))
+                        return (
+                          <a
+                            key={video.id}
+                            href={videoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="resource-card-video"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              if (videoUrl) {
+                                window.open(videoUrl, '_blank', 'noopener,noreferrer')
+                              }
+                            }}
+                          >
+                            <div className="resource-card-thumb">
+                              <img src={video.thumbnail} alt="" loading="lazy" referrerPolicy="no-referrer" />
+                              <div className="resource-card-play">
+                                <PlayCircle size={20} />
+                              </div>
+                            </div>
+                            <div className="resource-card-info">
+                              <strong>{video.title}</strong>
+                              <span>{video.channel}</span>
+                            </div>
+                          </a>
+                        )
+                      })}
+                    </div>
+
+                    {/* YouTube Search Direct Link */}
+                    {extraData.youtubeSearchUrl && (
+                      <div style={{ marginTop: '6px', marginBottom: '14px', textAlign: 'right' }}>
+                        <a
+                          href={formatExternalUrl(extraData.youtubeSearchUrl)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-link"
+                          style={{ fontSize: '11px', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#c4302b' }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            window.open(formatExternalUrl(extraData.youtubeSearchUrl), '_blank', 'noopener,noreferrer')
+                          }}
+                        >
+                          <VideoIcon size={13} />
+                          Browse all related lessons on YouTube
+                          <ExternalLink size={11} />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Web Resources & Documentation */}
+                {((extraData?.resources && extraData.resources.length > 0) || module.resourceUrl) && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--color-stone)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Official Documentation & Articles
+                    </div>
+
+                    {/* Primary Course Link */}
+                    {module.resourceUrl && (
+                      <a
+                        href={formatExternalUrl(module.resourceUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="resource-external-banner"
+                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          window.open(formatExternalUrl(module.resourceUrl), '_blank', 'noopener,noreferrer')
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <BookOpen size={17} color="var(--color-green, #2c6e52)" />
+                          <div>
+                            <strong style={{ fontSize: '12px', color: 'var(--color-ink)', display: 'block' }}>
+                              {module.resourceLabel || 'Primary Curriculum Guide'}
+                            </strong>
+                            <span style={{ fontSize: '11px', color: 'var(--color-stone)' }}>
+                              Interactive course and reference material
+                            </span>
+                          </div>
+                        </div>
+                        <span className="resource-external-link">
+                          Open Guide <ExternalLink size={12} />
+                        </span>
+                      </a>
+                    )}
+
+                    {/* Curated Extra Web Resources */}
+                    {extraData?.resources?.map((res, i) => (
+                      <a
+                        key={i}
+                        href={formatExternalUrl(res.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="resource-external-banner"
+                        style={{ textDecoration: 'none', cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          window.open(formatExternalUrl(res.url), '_blank', 'noopener,noreferrer')
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <Compass size={17} color="var(--color-clay, #d57351)" />
+                          <div>
+                            <strong style={{ fontSize: '12px', color: 'var(--color-ink)', display: 'block' }}>
+                              {res.title}
+                            </strong>
+                            <span style={{ fontSize: '11px', color: 'var(--color-stone)' }}>
+                              {res.source} · {res.description}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="resource-external-link">
+                          Explore <ExternalLink size={12} />
+                        </span>
                       </a>
                     ))}
-                    {!busy && !videos.length && <div className="popover-empty">No videos found for this topic. <br />Try exploring the main resource link below.</div>}
-                    <a className="popover-link" href={module.resourceUrl} target="_blank" rel="noopener noreferrer">{module.resourceLabel}<ExternalLink size={12} /></a>
                   </div>
                 )}
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>

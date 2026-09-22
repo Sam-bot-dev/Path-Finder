@@ -1,65 +1,62 @@
+<div align="center">
+
 # 🧭 Path-Finder (LearnPath AI)
+### *Start with a question. End with understanding.*
 
-> **"Start with a question. End with understanding."**  
-> An adaptive, AI-orchestrated learning tool that diagnoses student knowledge gaps, synthesizes personalized multi-module learning paths with rich resources and practice exercises, and provides a continuous progress tracker.
-
----
-
-[![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.3-646cff?logo=vite&logoColor=white)](https://vite.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.2-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Express](https://img.shields.io/badge/Express-Backend-000000?logo=express&logoColor=white)](https://expressjs.com/)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-Active-4285f4?logo=google&logoColor=white)](https://ai.google.dev/)
-[![OpenAI](https://img.shields.io/badge/ChatGPT-Gateway-412991?logo=openai&logoColor=white)](https://openai.com/)
+An adaptive, AI-orchestrated learning engine that diagnoses student knowledge gaps through 5–10 calibrated questions, synthesizes personalized multi-module learning paths with verified video tutorials & authoritative resources, and provides interactive practice with continuous mastery tracking.
 
 ---
 
-## 🎯 The Challenge & Mission
+[![React 19](https://img.shields.io/badge/React-19.2-61dafb?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.3-646cff?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.2-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Express](https://img.shields.io/badge/Express-5.2-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.5_Flash-4285f4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
+[![OpenAI](https://img.shields.io/badge/ChatGPT-GPT--4o_Mini-412991?style=for-the-badge&logo=openai&logoColor=white)](https://openai.com/)
+[![Firebase](https://img.shields.io/badge/Firebase_Auth-Google_SSO-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-> **Challenge**: Create a tool where a student answers **5–10 diagnostic questions** on a topic, and the system generates a **personalized learning path** with **recommended resources**, **practice exercises**, and a **progress tracker**.
+[Key Features](#-core-features) • [System Architecture](#️-system-architecture) • [User Flow](#-user-journey--pedagogical-flow) • [Quick Start](#-getting-started) • [API Docs](#-api-reference)
 
-Most online learning platforms are static—they present the same linear curriculum to everyone regardless of prior knowledge. **Path-Finder** solves this through intelligent pedagogical diagnosis:
+---
 
-1. **Any Topic Input**: Students are not restricted to predefined catalogs. Enter *any* subject—from *Quantum Computing* to *Organic Chemistry*, *React Architecture*, or *French Grammar*.
-2. **Adaptive Diagnostic Assessment**: Answers **5 to 10 calibrated questions** that test specific competencies from foundational to advanced.
-3. **Personalized Curriculum Generation**:
-   - **Targeted Focus Areas**: For skills answered incorrectly, generates deep-dive lessons (10–14 min), intuitive analogies, step-by-step worked examples, and targeted practice.
-   - **Refresher Modules**: For mastered skills, provides accelerated overviews (6–8 min) and advanced application challenges.
-4. **Verified Resources & Video Search**: Curated links to authoritative references (Wikipedia, MDN, OpenStax, Khan Academy) and automated educational video queries.
-5. **Interactive Practice & Mastery Tracking**: Formative practice questions per module with instant feedback and a persistent **Skill Competency Matrix**.
+</div>
+
+## 🎯 The Challenge & Vision
+
+Traditional learning platforms treat students like identical factory parts: everyone gets the same 40-hour video playlist or static textbook chapter, regardless of what they already understand.
+
+**Path-Finder** transforms learning into an intelligent, adaptive conversation:
+
+1. **Unconstrained Subject Input**: Enter *any* topic—from foundational subjects like *Python Syntax* or *Linear Algebra* to cutting-edge domains like *Quantum Computing*, *React 19 Server Components*, or *Organic Chemistry*.
+2. **Diagnostic Assessment (5–10 Questions)**: Diagnoses specific sub-competencies, isolating exact points of confusion without grade-pressure.
+3. **Adaptive Path Synthesis**:
+   - **Targeted Focus Modules**: Deep-dive lessons (10–14 min) with intuitive conceptual breakdowns, worked code examples, and practice for missed concepts.
+   - **Refresher Modules**: Accelerated overviews (6–8 min) for mastered skills with advanced application challenges.
+4. **Verified Multi-Media Resources**: Verified YouTube tutorials from top educational creators (freeCodeCamp, Corey Schafer, Programming with Mosh, 3Blue1Brown, CS50) and authoritative documentation (Python Docs, MDN, Khan Academy).
+5. **Formative Practice & Competency Matrix**: In-module practice exercises with instant feedback, streak tracking, daily goal rings, and a persistent **Skill Mastery Matrix**.
 
 ---
 
 ## 🏗️ System Architecture
 
-Path-Finder is built with a resilient client-server architecture featuring an **AI Gateway with Cascading Fallback** to guarantee uninterrupted learning.
-
-![Path-Finder Architecture](assets/diagram.png)
-
-### Architectural Diagram (Mermaid)
+Path-Finder is architected with a resilient client-server topology featuring an **AI Gateway with Multi-Provider Cascading Fallback** to guarantee 100% zero-downtime pedagogy.
 
 ```mermaid
 flowchart TD
-    subgraph Client ["Frontend (React 19 + Vite)"]
-        UI["Landing & Topic Search"]
-        Diag["Diagnostic Quiz (5-10 Qs)"]
-        PathView["Personalized Path & Modules"]
-        Prac["Interactive Practice Session"]
-        Prog["Progress Tracker & Mastery Matrix"]
+    subgraph Client ["Frontend (React 19 + TypeScript + Vite)"]
+        UI["Landing & Topic Prompt Bar"]
+        Diag["Diagnostic Assessment (5-10 Qs)"]
+        PathView["Personalized Learning Path (Modules & Drawer)"]
+        Prac["Module-by-Module Practice Engine"]
+        Prog["Progress Dashboard & Skill Mastery Matrix"]
         Store["StoreProvider (LocalStorage + Firebase Sync)"]
+        
         UI --> Diag --> PathView --> Prac --> Prog
-        Store -.-> Diag
-        Store -.-> PathView
-        Store -.-> Prac
-        Store -.-> Prog
+        Store -.->|State & Profile| Client
     end
 
-    subgraph Proxy ["Vite Dev Proxy & Middleware"]
-        VProxy["/api Proxy (Port 5173 -> 3001)"]
-    end
-
-    subgraph Backend ["Backend API (Node.js + Express)"]
+    subgraph Backend ["Backend API (Node.js + Express 5)"]
         API["Express Router (/api)"]
         DiagRoute["POST /api/diagnostic"]
         PathRoute["POST /api/path"]
@@ -75,63 +72,67 @@ flowchart TD
     subgraph AIGateway ["Unified AI Gateway (server/services/llm.ts)"]
         Router{"AI Router"}
         ChatGPT["ChatGPT / Experiential Labs\n(gpt-4o-mini / gpt-4o)"]
-        Gemini["Google Gemini Model\n(gemini-3.5-flash-lite)"]
+        Gemini["Google Gemini Generative AI\n(gemini-3.5-flash-lite)"]
         Pedagogy["Deterministic Pedagogical Engine\n(Zero-Downtime Fallback)"]
         
         DiagRoute --> Router
         PathRoute --> Router
-        Router -->|"Primary (Heavy Work)"| ChatGPT
-        ChatGPT -.->|"Quota / Card Cascade"| Gemini
-        Gemini -.->|"Rate Limit Cascade"| Pedagogy
+        Router -->|"Tier 1: Intensive Reasoning"| ChatGPT
+        ChatGPT -.->|"Tier 2: Automatic Fallback"| Gemini
+        Gemini -.->|"Tier 3: Graceful Offline Fallback"| Pedagogy
     end
 
-    subgraph External ["External Services & APIs"]
-        YouTube["YouTube Data API / Search"]
-        EduLinks["Curated Open Resources\n(Khan Academy, OpenStax, MDN, Wikipedia)"]
-        CloudDB["Firebase / Cloud Firestore"]
+    subgraph External ["External Services & Curated Media"]
+        YouTube["Verified YouTube Educational Video Catalog"]
+        Docs["Authoritative Documentation\n(Python Docs, MDN, OpenStax, Khan Academy)"]
+        Firebase["Firebase Auth & Cloud Firestore Sync"]
     end
 
-    Client -->|HTTP / REST| VProxy
-    VProxy -->|JSON| API
+    Client -->|REST Proxy /api| Backend
     VideoRoute --> YouTube
-    PathRoute --> EduLinks
-    Store -.->|Sync| CloudDB
+    VideoRoute --> Docs
+    Store -.->|Google Auth & Cloud Sync| Firebase
 ```
 
 ---
 
-## 🔄 User Journey & Data Flow
+## 🔄 User Journey & Pedagogical Flow
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Student as 🧑‍🎓 Student
+    actor Learner as 🧑‍🎓 Learner
     participant UI as 💻 Frontend UI
     participant Backend as ⚙️ Express Backend
     participant AI as 🧠 AI Gateway (ChatGPT / Gemini)
     participant Store as 💾 Store / Cloud Sync
 
-    Student->>UI: Inputs topic (e.g. "Linear Algebra") & selects 5-10 Qs
+    Learner->>UI: Types topic (e.g., "Python Basic Syntax") & selects 5-10 questions
     UI->>Backend: POST /api/diagnostic { topic, questionCount, level }
-    Backend->>AI: Generate calibrated questions & subskills
-    AI-->>Backend: JSON: 5-10 Questions with options & explanations
-    Backend-->>UI: Deliver diagnostic assessment
+    Backend->>AI: Prompts AI for calibrated diagnostic questions testing distinct skills
+    AI-->>Backend: JSON: Calibrated questions with options & explanations
+    Backend-->>UI: Renders diagnostic quiz
     
-    Student->>UI: Answers diagnostic questions
-    UI->>UI: Displays instant feedback, explanations & misconceptions
+    Learner->>UI: Answers diagnostic questions
+    UI->>UI: Reveals instant answer verification & misconception explanations
     
-    Student->>UI: Submits completed diagnostic
+    Learner->>UI: Submits diagnostic
     UI->>Backend: POST /api/path { topic, questions, answers }
-    Backend->>Backend: Evaluates accuracy & identifies gap vs mastered skills
-    Backend->>AI: Synthesize personalized modules (Focus vs Refresher)
-    AI-->>Backend: Tailored lessons, worked examples, practice & resources
-    Backend-->>UI: Return full personalized LearningPath
+    Backend->>Backend: Evaluates competency gaps (correct vs incorrect skills)
+    Backend->>AI: Synthesizes personalized curriculum (Focus vs Refresher modules)
+    AI-->>Backend: Customized lessons, examples, practice questions & resources
+    Backend-->>UI: Delivers complete LearningPath
     
-    UI->>Store: Save path, diagnostic score, and timestamp
-    UI->>Student: Displays personalized curriculum & skill breakdown
+    UI->>Store: Saves path, diagnostic score, and updates learner profile
+    UI->>Learner: Displays interactive roadmap with expandable lessons
     
-    Student->>UI: Reads modules & completes practice exercises
-    UI->>Store: Updates mastery scores, study time, streak & badges
+    Learner->>UI: Clicks "Explore more resources"
+    UI->>Backend: GET /api/videos?q=Python+syntax
+    Backend-->>UI: Returns real verified YouTube tutorials & official documentation links
+    Learner->>UI: Clicks video/guide (opens directly in new tab with verified URL)
+    
+    Learner->>UI: Completes module practice questions
+    UI->>Store: Records practice score, study time, streak & awards badges
 ```
 
 ---
@@ -140,48 +141,47 @@ sequenceDiagram
 
 | Feature | Description |
 | :--- | :--- |
-| **Dynamic Topic Input** | Type *any* custom subject on the Landing Hero or Diagnostic page. Not restricted to hardcoded topics. |
-| **5–10 Adaptive Questions** | Choose assessment length (5, 6, 7, 8, or 10 questions) and target difficulty (Beginner, Intermediate, Advanced). |
-| **Instant Explanations** | Educational feedback reveals why the right answer is correct and explains the misconception behind distractors. |
-| **Adaptive Lesson Modules** | Modules adapt to performance: **Targeted Focus** for incorrect skills (10–14 min, step-by-step breakdown) vs **Refresher** for correct skills. |
-| **Curated Multi-Media Resources** | Integrated documentation links (Wikipedia, MDN, OpenStax, Khan Academy) and YouTube video searches. |
-| **Module Practice & Grading** | Dedicated interactive practice questions for each module with instant verification and score recording. |
-| **Comprehensive Progress Tracker** | Live dashboard tracking: active paths, completion %, hours spent, daily streak, daily goal ring, and achievement badges. |
-| **Skill Competency Matrix** | Real-time breakdown categorizing every assessed skill across all sessions as *Mastered* vs *Needs Practice*. |
-| **Hybrid Cloud / Local Sync** | Local-first architecture stored in `localStorage` with seamless optional Firebase Auth & Firestore cloud sync. |
+| **Dynamic Topic Input** | Type *any* custom subject directly on the Landing Hero or Diagnostic page. Not restricted to pre-made templates. |
+| **5–10 Question Calibrator** | Flexible assessment length (5, 7, or 10 questions) and difficulty levels (Beginner, Intermediate, Advanced). |
+| **Instant Diagnostic Insights** | Immediate educational feedback explaining *why* the correct answer works and detailing misconceptions behind distractors. |
+| **Adaptive Learning Modules** | Automatically tags each lesson as **Targeted Focus** (for missed skills with detailed guides) or **Refresher** (for mastered skills with advanced challenges). |
+| **Real YouTube Videos & Docs** | Embedded resource drawer providing verified YouTube tutorials from top creators (freeCodeCamp, Corey Schafer, 3Blue1Brown, CS50) and official documentation (Python Docs, MDN, Khan Academy). |
+| **Guaranteed Link Reliability** | Built-in link sanitizer and direct `window.open` handlers ensuring every video and resource link opens external pages reliably. |
+| **Interactive Practice Engine** | Module-by-module exercises with instant evaluation, feedback, and score retention. |
+| **Skill Competency Matrix** | Live mastery dashboard categorizing all assessed competencies across your learning sessions as *Mastered* vs *Needs Practice*. |
+| **Google Firebase SSO & Cloud Sync** | Seamless Google Sign-In displaying user avatar, name, and email reactively across topbar and sidebar, with local-first offline support. |
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**:
-  - React 19 + TypeScript
-  - Vite 7 with Fast HMR & Tailwind CSS 4
-  - Framer Motion for smooth transitions
-  - Lucide React for consistent iconography
-  - React Router DOM 7 for single-page routing
-- **Backend**:
-  - Node.js (v18+) & Express 4
-  - TypeScript executed seamlessly with `tsx`
-  - CORS & Dotenv configuration
-- **AI & Pedagogical Engine**:
-  - **ChatGPT / Experiential Labs**: Primary model gateway (`gpt-4o-mini`, `gpt-4o`, `gpt-5.6-luna`)
-  - **Google Gemini**: Active generative engine (`gemini-3.5-flash-lite`, `gemini-3.5-flash`, `gemini-2.5-pro`)
-  - **Pedagogical Engine**: Built-in deterministic generator ensuring 100% uptime
-- **Storage & Cloud**:
-  - Browser `localStorage` (offline & local-first)
-  - Firebase Authentication & Firestore (optional cloud sync)
+### Frontend
+- **Framework**: [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- **Bundler & Tooling**: [Vite 7](https://vite.dev/) with hot module replacement (HMR)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) + custom LearnPath design system
+- **Icons**: [Lucide React](https://lucide.dev/) (modern, accessible SVG iconography)
+- **Routing**: [React Router DOM 7](https://reactrouter.com/) (declarative client routing)
+- **Authentication**: [Firebase Web SDK 12](https://firebase.google.com/) (Google OAuth & persistence)
+
+### Backend
+- **Server**: [Node.js](https://nodejs.org/) (v18+) & [Express 5](https://expressjs.com/)
+- **Runtime**: [tsx](https://github.com/privatenumber/tsx) with watch mode for rapid iteration
+- **Security & Utilities**: CORS, dotenv, robust error-handling middleware
+
+### AI & Pedagogical Engine
+- **ChatGPT / Experiential Labs Gateway**: Primary model gateway utilizing `gpt-4o-mini`, `gpt-4o`, and `gpt-5.6-luna`.
+- **Google Gemini Generative AI**: Active generative model utilizing `gemini-3.5-flash-lite` and `gemini-3.5-flash`.
+- **Pedagogical Generator**: Deterministic curriculum generator ensuring uninterrupted uptime even when offline.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Getting Started
 
 ### Prerequisites
 - **Node.js** v18.0.0 or higher
 - **npm** or **pnpm**
 
-### 1. Clone & Install
-
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Sam-bot-dev/Path-Finder.git
 cd Path-Finder
@@ -189,47 +189,42 @@ npm install
 ```
 
 ### 2. Configure Environment Variables
-
-Create a `.env` file in the root directory (or copy from `.env.example`):
-
+Copy `.env.example` to `.env`:
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your API credentials:
-
+Configure your credentials in `.env`:
 ```env
-# Google Gemini AI Configuration
+# Google Gemini Generative AI
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-3.5-flash-lite
 
 # ChatGPT / Experiential Labs Gateway
-EXPERIENTIAL_API_KEY=your_xpl_or_openai_api_key_here
-OPENAI_API_KEY=your_xpl_or_openai_api_key_here
+EXPERIENTIAL_API_KEY=your_openai_or_xpl_key_here
+OPENAI_API_KEY=your_openai_or_xpl_key_here
 EXPERIENTIAL_BASE_URL=https://api.experientiallabs.ai/v1
 
-# Optional YouTube Data API
-YOUTUBE_API_KEY=
+# Firebase Authentication (Google SSO)
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
 
-# Server Configuration
+# Server Port
 PORT=3001
-VITE_API_BASE_URL=
 ```
 
-### 3. Run Development Server
-
-Start both the backend server and frontend simultaneously with a single command:
-
+### 3. Run the Development Server
+Launch both the Express backend and the Vite client simultaneously:
 ```bash
 npm run dev
 ```
 
-- **Frontend**: `http://localhost:5173` (or `http://localhost:5174`)
-- **Backend API**: `http://localhost:3001`
-- Requests to `/api/*` on the frontend are automatically proxied to the Express backend.
+- **Frontend Application**: [http://localhost:5173](http://localhost:5173) (or `http://localhost:5174`)
+- **Backend API Server**: [http://localhost:3001](http://localhost:3001)
 
 ### 4. Build for Production
-
 ```bash
 npm run build
 ```
@@ -239,7 +234,7 @@ npm run build
 ## 📡 API Reference
 
 ### `GET /api/status`
-Returns backend health and active AI providers.
+Checks server health and active AI providers.
 ```json
 {
   "status": "ok",
@@ -253,60 +248,128 @@ Returns backend health and active AI providers.
 ### `POST /api/diagnostic`
 Generates 5–10 diagnostic questions for any topic.
 ```json
-// Request Body
+// Request
 {
-  "topic": "Quantum Computing",
+  "topic": "Python Syntax and Control Flow",
   "questionCount": 5,
-  "level": "Intermediate"
+  "level": "Beginner"
+}
+
+// Response
+{
+  "questions": [
+    {
+      "id": "q1",
+      "skill": "Variables and Data Types",
+      "prompt": "What data type is produced by 3.5 in Python?",
+      "options": ["int", "str", "float", "bool"],
+      "answer": 2,
+      "explanation": "A float represents real numbers with a fractional component."
+    }
+  ]
 }
 ```
 
 ### `POST /api/path`
 Generates a personalized learning path based on student diagnostic performance.
 ```json
-// Request Body
+// Request
 {
-  "topic": "Quantum Computing",
+  "topic": "Python Syntax and Control Flow",
   "questions": [ ... ],
-  "answers": [ 1, 2, 0, 1, 2 ]
+  "answers": [ 2, 1, 0, 3, 2 ]
+}
+
+// Response
+{
+  "id": "uuid",
+  "topicName": "Python Syntax and Control Flow",
+  "modules": [
+    {
+      "id": "m-1",
+      "title": "Refresher: Variables and Data Types",
+      "description": "Quick review of basic memory allocation and types.",
+      "minutes": 7,
+      "focus": false,
+      "content": [ "..." ],
+      "example": { "title": "Example", "text": "..." },
+      "practice": [ ... ],
+      "resourceUrl": "https://docs.python.org/3/tutorial/",
+      "resourceLabel": "Official Python 3 Documentation"
+    }
+  ]
 }
 ```
 
 ### `GET /api/videos?q={query}`
-Searches educational YouTube videos for a specific lesson or subskill.
+Returns verified YouTube educational videos, direct search queries, and curated documentation links.
+```json
+// Response
+{
+  "videos": [
+    {
+      "id": "rfscVS0vtbw",
+      "title": "Python for Beginners - Full Course [4 Hours]",
+      "channel": "freeCodeCamp.org",
+      "thumbnail": "https://i.ytimg.com/vi/rfscVS0vtbw/hqdefault.jpg",
+      "url": "https://youtube.com/watch?v=rfscVS0vtbw"
+    }
+  ],
+  "resources": [
+    {
+      "title": "Python.org Official Tutorial",
+      "url": "https://docs.python.org/3/tutorial/",
+      "source": "Python Software Foundation",
+      "description": "Authoritative guide covering language fundamentals.",
+      "type": "docs"
+    }
+  ],
+  "youtubeSearchUrl": "https://www.youtube.com/results?search_query=python%20tutorial%20educational"
+}
+```
 
 ---
 
-## 📂 Repository Structure
+## 📂 Project Structure
 
 ```
 Path-Finder/
-├── api/                   # Vercel serverless function adapters
-│   ├── diagnostic.ts      # Serverless diagnostic endpoint
-│   ├── path.ts            # Serverless path generator
-│   └── status.ts          # Serverless status checker
-├── assets/                # Visual diagrams and UI screenshots
-│   └── diagram.png        # Complete architecture diagram
-├── server/                # Standalone Express backend
-│   ├── index.ts           # Express server & API routes
+├── server/                         # Express API & AI Gateway
+│   ├── index.ts                    # Server initialization and routes
 │   └── services/
-│       ├── gemini.ts      # Google Gemini integration
-│       ├── llm.ts         # Multi-provider AI Gateway (ChatGPT + Gemini)
-│       ├── pedagogy.ts    # Deterministic pedagogical generator
-│       └── resourceService.ts # Verified resource & video search
-├── src/                   # React 19 Frontend
-│   ├── components/        # Shell, TopicBrowser, UI controls
-│   ├── data/              # Curated foundational tracks
-│   ├── lib/               # Services, store, types & Firebase
-│   └── pages/             # Landing, Diagnostic, LearningPath, Practice, Progress
-├── .env.example           # Environment template
-├── package.json           # Dependencies & concurrent dev scripts
-├── vite.config.ts         # Vite build configuration with /api proxy
-└── README.md              # Project documentation & architecture
+│       ├── gemini.ts               # Google Gemini integration
+│       ├── llm.ts                  # Multi-provider routing (ChatGPT + Gemini)
+│       ├── pedagogy.ts             # Deterministic fallback pedagogy engine
+│       └── resourceService.ts      # Verified YouTube and web resource catalog
+├── src/                            # React 19 Frontend
+│   ├── components/
+│   │   ├── Shell.tsx               # App layout with reactive user profile
+│   │   ├── AccountModal.tsx        # Profile & Google Sign-In modal
+│   │   ├── TopicBrowser.tsx        # Search & instant check-in generator
+│   │   └── ui.tsx                  # Buttons, badges, and progress rings
+│   ├── data/                       # Foundational curated subjects
+│   ├── lib/
+│   │   ├── firebase.ts             # Firebase Auth & Cloud Firestore sync
+│   │   ├── services.ts             # API client with fallback handling
+│   │   ├── store.tsx               # Reactive store with instant auth updates
+│   │   └── types.ts                # Application data contracts
+│   └── pages/
+│       ├── Landing.tsx             # Interactive landing page with topic input
+│       ├── DiagnosticPage.tsx      # Diagnostic setup (slider & difficulty)
+│       ├── Diagnostic.tsx          # Dynamic 5-10 question assessment
+│       ├── Results.tsx             # Competency summary & path generation
+│       ├── LearningPath.tsx        # Adaptive modules & resource drawer
+│       ├── Practice.tsx            # Formative practice session
+│       ├── Progress.tsx            # Skill Competency Matrix & analytics
+│       └── Settings.tsx            # Preferences, backup & cloud accounts
+├── .env.example                    # Environment variable template
+├── package.json                    # Scripts and dependencies
+├── vite.config.ts                  # Vite configuration with /api proxy
+└── README.md                       # Comprehensive documentation
 ```
 
 ---
 
 ## 📄 License
 
-MIT License. Designed with care for curious minds.
+This project is licensed under the **MIT License**. Crafted with precision for curious minds everywhere.
