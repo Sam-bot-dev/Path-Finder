@@ -63,7 +63,7 @@ flowchart TD
         Store["StoreProvider (LocalStorage + Firebase Sync)"]
         
         UI --> Diag --> PathView --> Prac --> Prog
-        Store -.->|State & Profile| Client
+        Store -.->|Reactive State| UI
     end
 
     subgraph Backend ["Backend API (Node.js + Express 5)"]
@@ -98,7 +98,8 @@ flowchart TD
         Firebase["Firebase Auth & Cloud Firestore Sync"]
     end
 
-    Client -->|REST Proxy /api| Backend
+    UI -->|REST Proxy /api| API
+    PathView -->|Request Videos| VideoRoute
     VideoRoute --> YouTube
     VideoRoute --> Docs
     Store -.->|Google Auth & Cloud Sync| Firebase
